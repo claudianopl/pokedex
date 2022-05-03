@@ -27,7 +27,25 @@ export const ContainerFilter = styled.div`
   }
 `;
 
+export const ContainerPokemonCard = styled.div`
+  min-height: 398px;
+  margin-bottom: 32px;
+`;
+
 export const Grid = styled.div`
-  display: flex;
-  justify-content: left;
+  margin-top: 74px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 64px 16px;
+  @media only screen and (max-width: 1024px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  @media only screen and (max-width: 780px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media only screen and (max-width: 480px) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 `;

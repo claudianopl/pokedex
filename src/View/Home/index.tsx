@@ -1,15 +1,35 @@
 import { Form, Formik } from 'formik';
 import React, { useCallback, useState } from 'react';
-import Select from 'react-select';
+import { CardPokemon } from '../../components/cardPokemon';
 import Header from '../../components/header';
+import { ModalCustom } from '../../components/ModalCustom';
+import { PaginationComponent } from '../../components/pagination';
 import { Search } from '../../components/search';
 import { SelectTypes } from '../../components/selectTypes';
-import { Container, ContainerFilter, Grid, Root } from './styles';
+import {
+  Container,
+  ContainerFilter,
+  ContainerPokemonCard,
+  Grid,
+  Root,
+} from './styles';
 
 const Home: React.FC = () => {
   const [typeFilter, setTypeFilter] = useState('');
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
 
-  const handleAplyFilter = useCallback((value) => {
+  const handleGetAllPokemon = useCallback((pageNumber) => {
+    console.log(pageNumber);
+  }, []);
+
+  const handleOpenModal = useCallback((id) => {
+    setIsOpenModal((currentIsOpenModal) => !currentIsOpenModal);
+  }, []);
+
+  const handleAplyFilter = useCallback(({ value }) => {
+    setTypeFilter(value);
     console.log(value);
   }, []);
 
@@ -40,9 +60,18 @@ const Home: React.FC = () => {
             </Form>
           )}
         </Formik>
-
-        <Grid>dasdas</Grid>
+        <ContainerPokemonCard>
+          <Grid>
+            <CardPokemon isOpenModal={() => handleOpenModal('teste')} />
+          </Grid>
+        </ContainerPokemonCard>
+        <PaginationComponent
+          handleGetAllPokemon={handleGetAllPokemon}
+          page={page}
+          totalPages={totalPages}
+        />
       </Container>
+      {isOpenModal && <ModalCustom setIsOpenModal={setIsOpenModal} />}
     </Root>
   );
 };
