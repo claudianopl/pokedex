@@ -4,6 +4,8 @@ import { api } from '../api';
 import {
   getAllPokemonFactory,
   getFilterPokemonFactory,
+  getOnePokemonFactory,
+  getPokemonSpeciesFactory,
   getSearchPokemonFactory,
   getTypesPokemonFactory,
 } from '../factory/pokemonFactory';
@@ -12,6 +14,12 @@ export const getTypesPokemon = async (id: string): Promise<any> => {
   const res = await api.get(`/pokemon/${id}`);
 
   return getTypesPokemonFactory(res.data);
+};
+
+export const getPokemonSpecies = async (id: string): Promise<any> => {
+  const res = await api.get(`/pokemon-species/${id}`);
+
+  return getPokemonSpeciesFactory(res.data.flavor_text_entries);
 };
 
 export const getAllPokemon = async (
@@ -70,4 +78,21 @@ export const getFilterPokemon = async (type: string): Promise<any> => {
   });
 
   return getFilterPokemonFactory(res.data.pokemon);
+};
+
+export const getOnePokemon = async (id: string): Promise<any> => {
+  const res = await api.get(`/pokemon/${id}`, {
+    validateStatus: (status: number): any => {
+      if (status >= 200 && status < 300) {
+        return status;
+      }
+      if (status >= 400 && status < 500) {
+        toast.error('Pokémon não encontrados.');
+      } else if (status >= 500) {
+        toast.error('Infelizmente, algo deu errado.');
+      }
+    },
+  });
+
+  return getOnePokemonFactory(res.data);
 };

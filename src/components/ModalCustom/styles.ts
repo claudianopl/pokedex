@@ -116,6 +116,6 @@ export const Text = styled.p<TextProps>`
 export const ContainerTags = styled.div`
   display: flex;
   width: 100%;
-  justify-content: space-evenly;
+  justify-content: center;
   margin-bottom: 14px;
 `;

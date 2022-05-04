@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import {
   getAllPokemon,
   getFilterPokemon,
+  getOnePokemon,
   getSearchPokemon,
 } from '../../api/services/pokemon';
 import { CardPokemon } from '../../components/cardPokemon';
@@ -26,8 +27,17 @@ interface PokemonsProps {
   types: [];
 }
 
+interface PokemonProps {
+  imageUrl: string;
+  id: string;
+  name: string;
+  types: [];
+  info: string;
+}
+
 const Home: React.FC = () => {
   const [pokemons, setPokemons] = useState<PokemonsProps[]>([]);
+  const [pokemon, setPokemon] = useState<PokemonProps>({} as PokemonProps);
   const [typeFilter, setTypeFilter] = useState({ value: '', label: 'Tipos' });
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
@@ -89,7 +99,13 @@ const Home: React.FC = () => {
     [handleGetAllPokemon, handleResetPagination],
   );
 
-  const handleOpenModal = useCallback((id) => {
+  const handleOpenModal = useCallback(async (id) => {
+    try {
+      const response = await getOnePokemon(id);
+      setPokemon(response);
+    } catch (error) {
+      // Aqui iria vim alguma integração com o sentry, para monitorar erros na aplicação.
+    }
     setIsOpenModal((currentIsOpenModal) => !currentIsOpenModal);
   }, []);
 
@@ -130,7 +146,7 @@ const Home: React.FC = () => {
                 imgUrl={imageUrl}
                 name={name}
                 types={types}
-                isOpenModal={() => handleOpenModal('teste')}
+                isOpenModal={() => handleOpenModal(id)}
               />
             ))}
           </Grid>
@@ -141,7 +157,16 @@ const Home: React.FC = () => {
           totalPages={totalPages}
         />
       </Container>
-      {isOpenModal && <ModalCustom setIsOpenModal={setIsOpenModal} />}
+      {isOpenModal && (
+        <ModalCustom
+          id={pokemon.id}
+          imgUrl={pokemon.imageUrl}
+          info={pokemon.info}
+          name={pokemon.name}
+          types={pokemon.types}
+          setIsOpenModal={setIsOpenModal}
+        />
+      )}
     </Root>
   );
 };
