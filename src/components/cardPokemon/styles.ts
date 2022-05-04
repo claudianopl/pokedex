@@ -44,7 +44,7 @@ export const TextTitle = styled.h4`
 
 export const ContainerTags = styled.div`
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   max-width: 200px;
   width: 100%;
 `;

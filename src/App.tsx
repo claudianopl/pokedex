@@ -1,6 +1,8 @@
 import React from 'react';
 
 import { BrowserRouter } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { ThemeProvider } from 'styled-components';
 import Routes from './Routes';
@@ -14,6 +16,16 @@ const App: React.FC = () => {
       <ThemeProvider theme={theme}>
         <Routes />
         <GlobalStyles />
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover={false}
+        />
       </ThemeProvider>
     </BrowserRouter>
   );

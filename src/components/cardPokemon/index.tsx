@@ -11,23 +11,31 @@ import {
 
 interface CardPokemonProps {
   isOpenModal: () => void;
+  imgUrl: string;
+  id: string;
+  name: string;
+  types: [];
 }
 
-export const CardPokemon: React.FC<CardPokemonProps> = ({ isOpenModal }) => {
+export const CardPokemon: React.FC<CardPokemonProps> = ({
+  isOpenModal,
+  imgUrl,
+  id,
+  name,
+  types,
+}) => {
   return (
     <Root onClick={isOpenModal}>
       <ContainerText>
         <ContainerImg>
-          <img
-            src="https://unpkg.com/pokeapi-sprites@2.0.2/sprites/pokemon/other/dream-world/1.svg"
-            alt="Bulbasalro"
-          />
+          <img src={imgUrl} alt={name} />
         </ContainerImg>
-        <TextId>Nº387</TextId>
-        <TextTitle>Turtwig</TextTitle>
+        <TextId>Nº{id}</TextId>
+        <TextTitle>{name}</TextTitle>
         <ContainerTags>
-          <Tags type="fighting" />
-          <Tags type="fighting" />
+          {types.map(({ typeName }) => (
+            <Tags key={typeName} type={typeName} />
+          ))}
         </ContainerTags>
       </ContainerText>
     </Root>

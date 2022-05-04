@@ -8,6 +8,9 @@ export const Container = styled.div<ContainerProps>`
   margin-top: 9px;
   padding: 9px 10px;
   border-radius: 7px;
+  &:first-child {
+    margin-right: 8px;
+  }
   h3 {
     font-weight: 700;
     font-size: 12px;

@@ -16,7 +16,7 @@ export const PaginationComponent: React.FC<PaginationComponentProps> = ({
   return (
     <ContainerPagination>
       <article>
-        Página <strong>{page}</strong> de <strong>{totalPages}</strong>
+        Página <strong>{page + 1}</strong> de <strong>{totalPages + 1}</strong>
       </article>
       <Button
         onClick={() => handleGetAllPokemon(page - 1)}

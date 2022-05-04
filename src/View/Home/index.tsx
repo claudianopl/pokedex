@@ -1,5 +1,10 @@
 import { Form, Formik } from 'formik';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import {
+  getAllPokemon,
+  getFilterPokemon,
+  getSearchPokemon,
+} from '../../api/services/pokemon';
 import { CardPokemon } from '../../components/cardPokemon';
 import Header from '../../components/header';
 import { ModalCustom } from '../../components/ModalCustom';
@@ -14,28 +19,83 @@ import {
   Root,
 } from './styles';
 
+interface PokemonsProps {
+  id: string;
+  name: string;
+  imageUrl: string;
+  types: [];
+}
+
 const Home: React.FC = () => {
-  const [typeFilter, setTypeFilter] = useState('');
-  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [pokemons, setPokemons] = useState<PokemonsProps[]>([]);
+  const [typeFilter, setTypeFilter] = useState({ value: '', label: 'Tipos' });
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const [isOpenModal, setIsOpenModal] = useState(false);
 
-  const handleGetAllPokemon = useCallback((pageNumber) => {
-    console.log(pageNumber);
+  const handleResetPagination = useCallback(() => {
+    setPage(0);
+    setTotalPages(0);
   }, []);
+
+  const handleGetAllPokemon = useCallback(async (pageNumber) => {
+    try {
+      const response = await getAllPokemon(pageNumber * 20, 20);
+      setPokemons(response.pokemons);
+      setTotalPages(Math.floor(response.qtdPokemons / 20));
+    } catch (error) {
+      // Aqui iria vim alguma integração com o sentry, para monitorar erros na aplicação.
+    }
+    setPage(pageNumber);
+  }, []);
+
+  const handleAplyFilter = useCallback(
+    async (value) => {
+      setTypeFilter(value);
+      try {
+        if (value.value !== '') {
+          const response = await getFilterPokemon(value.value);
+          setPokemons(response);
+          handleResetPagination();
+        } else {
+          handleGetAllPokemon(0);
+        }
+      } catch (error) {
+        handleResetPagination();
+        // Aqui iria vim alguma integração com o sentry, para monitorar erros na aplicação.
+      }
+    },
+    [handleGetAllPokemon, handleResetPagination],
+  );
+
+  const handleSearchSubmit = useCallback(
+    async (value, resetForm) => {
+      try {
+        if (value.search) {
+          const response = await getSearchPokemon(value.search);
+          setPokemons([response]);
+          handleResetPagination();
+          setTypeFilter({ value: '', label: 'Tipos' });
+        } else {
+          handleGetAllPokemon(0);
+        }
+      } catch (error) {
+        handleResetPagination();
+        setTypeFilter({ value: '', label: 'Tipos' });
+        // Aqui iria vim alguma integração com o sentry, para monitorar erros na aplicação.
+      }
+      resetForm();
+    },
+    [handleGetAllPokemon, handleResetPagination],
+  );
 
   const handleOpenModal = useCallback((id) => {
     setIsOpenModal((currentIsOpenModal) => !currentIsOpenModal);
   }, []);
 
-  const handleAplyFilter = useCallback(({ value }) => {
-    setTypeFilter(value);
-    console.log(value);
-  }, []);
-
-  const handleSubmit = useCallback((value) => {
-    console.log(value);
-  }, []);
+  useEffect(() => {
+    handleGetAllPokemon(0);
+  }, [handleGetAllPokemon]);
 
   return (
     <Root>
@@ -48,21 +108,31 @@ const Home: React.FC = () => {
           validateOnChange={false}
           validateOnBlur={false}
           onSubmit={(values, { resetForm }) => {
-            handleSubmit(values);
+            handleSearchSubmit(values, resetForm);
           }}
         >
-          {(formikProps) => (
-            <Form>
-              <ContainerFilter>
-                <Search name="search" placeholder="Pesquise seu Pokémon!" />
-                <SelectTypes setValue={(value) => handleAplyFilter(value)} />
-              </ContainerFilter>
-            </Form>
-          )}
+          <Form>
+            <ContainerFilter>
+              <Search name="search" placeholder="Pesquise seu Pokémon!" />
+              <SelectTypes
+                typeValue={typeFilter}
+                setValue={(value) => handleAplyFilter(value)}
+              />
+            </ContainerFilter>
+          </Form>
         </Formik>
         <ContainerPokemonCard>
           <Grid>
-            <CardPokemon isOpenModal={() => handleOpenModal('teste')} />
+            {pokemons.map(({ id, name, imageUrl, types }) => (
+              <CardPokemon
+                key={id}
+                id={id}
+                imgUrl={imageUrl}
+                name={name}
+                types={types}
+                isOpenModal={() => handleOpenModal('teste')}
+              />
+            ))}
           </Grid>
         </ContainerPokemonCard>
         <PaginationComponent

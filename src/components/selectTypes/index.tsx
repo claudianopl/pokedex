@@ -4,12 +4,16 @@ import { ImRadioChecked } from 'react-icons/im';
 import { Container } from './styles';
 
 interface SelectTypesProps {
+  typeValue: object;
   setValue: (value: any) => void;
 }
 
-export const SelectTypes: React.FC<SelectTypesProps> = ({ setValue }) => {
+export const SelectTypes: React.FC<SelectTypesProps> = ({
+  setValue,
+  typeValue,
+}) => {
   const options = [
-    { value: '', label: '' },
+    { value: '', label: 'Tipos' },
     { value: 'fire', label: 'Fogo' },
     { value: 'water', label: 'Água' },
     { value: 'grass', label: 'Grama' },
@@ -39,7 +43,7 @@ export const SelectTypes: React.FC<SelectTypesProps> = ({ setValue }) => {
       borderBottom: '1px solid #CCCCD1',
       padding: 16,
     }),
-    control: (provided: any, state: any) => ({
+    control: (provided: any) => ({
       width: '100%',
       ...provided,
       backgroundColor: 'transparent',
@@ -67,6 +71,7 @@ export const SelectTypes: React.FC<SelectTypesProps> = ({ setValue }) => {
       <ImRadioChecked size={18} />
       <Select
         placeholder="Tipos"
+        value={typeValue}
         options={options}
         styles={customStyles}
         onChange={(value) => setValue(value)}
