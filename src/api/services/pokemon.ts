@@ -53,7 +53,7 @@ export const getSearchPokemon = async (name: string): Promise<any> => {
         return status;
       }
       if (status >= 400 && status < 500) {
-        toast.error('Pokémon não encontrados.');
+        toast.error('Pokémon não encontrado.');
       } else if (status >= 500) {
         toast.error('Infelizmente, algo deu errado.');
       }
@@ -87,7 +87,7 @@ export const getOnePokemon = async (id: string): Promise<any> => {
         return status;
       }
       if (status >= 400 && status < 500) {
-        toast.error('Pokémon não encontrados.');
+        toast.error('Pokémon não encontrado.');
       } else if (status >= 500) {
         toast.error('Infelizmente, algo deu errado.');
       }

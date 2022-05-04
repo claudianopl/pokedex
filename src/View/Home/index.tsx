@@ -71,7 +71,6 @@ const Home: React.FC = () => {
           handleGetAllPokemon(0);
         }
       } catch (error) {
-        handleResetPagination();
         // Aqui iria vim alguma integração com o sentry, para monitorar erros na aplicação.
       }
     },
@@ -90,8 +89,6 @@ const Home: React.FC = () => {
           handleGetAllPokemon(0);
         }
       } catch (error) {
-        handleResetPagination();
-        setTypeFilter({ value: '', label: 'Tipos' });
         // Aqui iria vim alguma integração com o sentry, para monitorar erros na aplicação.
       }
       resetForm();
